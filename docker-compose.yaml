@@ -1,0 +1,8 @@
+services:
+  os.Tours.discovry-service:
+    build: ./discovery-service
+    container_name: Tours.discovry-service
+    ports:
+      - '8761:8761'
+    expose:
+      - '8761'

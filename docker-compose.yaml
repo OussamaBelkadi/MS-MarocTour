@@ -1,8 +1,21 @@
 services:
-  os.Tours.discovry-service:
+  os-Tours-discovery-service:
     build: ./discovery-service
     container_name: Tours.discovry-service
     ports:
       - '8761:8761'
     expose:
       - '8761'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+
+  os-Tours-config-server:
+    build: ./config-service
+    container_name: Tours.config-server
+    ports:
+      - '9999:9999'
+    expose:
+      - '9999'
+    depends_on:
+      - os-Tours-discovery-service

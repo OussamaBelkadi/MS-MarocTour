@@ -35,7 +35,5 @@ services:
       DISCOVERY_SERVICE_URL: 'http://Tours.discovery-service:8761/eureka'
       CONFIG_SERVICE: 'http://Tours.config-server:9999'
     depends_on:
-      os-tours-discovery-service:
-        condition: service_healthy
       os-tours-config-server:
         condition: service_healthy

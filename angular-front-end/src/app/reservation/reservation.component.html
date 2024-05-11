@@ -1,0 +1,21 @@
+<p>reservation works!</p>
+<div class="p-4">
+  <div class="card">
+    <div class="card-body">
+      <table *ngIf="reservations" class="table">
+        <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Address</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let reservation of reservations">
+          <th>{{reservation.id}}</th><th>{{reservation.name}}</th><th>{{reservation.address}}</th>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+</div>

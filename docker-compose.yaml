@@ -1,0 +1,85 @@
+services:
+  os-tours-discovery-service:
+    build: ./discovery-service
+    container_name: Tours.discovery-service
+    ports:
+      - '8761:8761'
+    expose:
+      - '8761'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      retries: 4
+
+  os-tours-config-server:
+    build: ./config-service
+    container_name: Tours.config-server
+    ports:
+      - '9999:9999'
+    expose:
+      - '9999'
+    environment:
+      DISCOVERY_SERVICE_URL: 'http://Tours.discovery-service:8761/eureka'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/health" ]
+      interval: 40s
+      retries: 4
+    depends_on:
+      os-tours-discovery-service:
+        condition: service_healthy
+
+
+  os-tours-region-service:
+    build: ./ToureRegion
+    container_name: Tours.region-service
+    ports:
+      - '8084:8084'
+    expose:
+      - '8084'
+    environment:
+      DISCOVERY_SERVICE_URL: 'http://Tours.discovery-service:8761/eureka'
+      CONFIG_SERVICE: 'http://Tours.config-server:9999'
+      URL_DB: 'http://Region-db:5432/region'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
+      interval: 20s
+      retries: 4
+    depends_on:
+      os-tours-config-server:
+        condition: service_healthy
+
+  os-tours-reservation-service:
+    build: ./ToureReservation
+    container_name: tours.reservation-service
+    ports:
+      - '8085:8085'
+    expose:
+      - '8085'
+    environment:
+      DISCOVERY_SERVICE_URL: 'http://Tours.discovery-service:8761/eureka'
+      CONFIG_SERVICE: 'http://Tours.config-server:9999'
+    depends_on:
+      os-tours-region-service:
+        condition: service_healthy
+
+  os-tour-gateway:
+    build: ./gateway-service
+    container_name: tours.gateway
+    ports:
+      - '8887:8887'
+    expose:
+      - '8887'
+    environment:
+      DISCOVERY_SERVICE_URL: 'http://Tours.discovery-service:8761/eureka'
+      CONFIG_SERVICE: 'http://Tours.config-server:9999'
+    depends_on:
+      os-tours-discovery-service:
+        condition: service_healthy
+
+  os-front-end:
+    build: ./angular-front-end
+    container_name: os-front-end
+    ports:
+      - '80:80'
+    expose:
+      - '80'

@@ -1,0 +1,22 @@
+<p>region works!</p>
+
+<div class="p-4">
+  <div class="card">
+    <div class="card-body">
+      <table *ngIf="regions" class="table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Name</th><th>Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let region of regions">
+            <th>{{region.id}}</th><th>{{region.name}}</th><th>{{region.address}}</th>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+</div>
